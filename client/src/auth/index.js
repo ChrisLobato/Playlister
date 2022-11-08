@@ -11,14 +11,16 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
-    LOGIN_FAIL: "LOGIN_FAIL"
+    LOGIN_FAIL: "LOGIN_FAIL",
+    REGISTER_FAIL: "REGISTER_FAIL"
 }
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
-        failedtologin: false
+        failedtologin: false,
+        failedtoregister: false
     });
     const history = useHistory();
 
@@ -33,36 +35,49 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
-                    failedtologin: false
+                    failedtologin: false,
+                    failedtoregister: false
                 });
             }
             case AuthActionType.LOGIN_USER: {
                 return setAuth({
                     user: payload.user,
                     loggedIn: true,
-                    failedtologin: false
+                    failedtologin: false,
+                    failedtoregister: false
                 })
             }
             case AuthActionType.LOGOUT_USER: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
-                    failedtologin: false
+                    failedtologin: false,
+                    failedtoregister: false
                 })
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
                     loggedIn: true,
-                    failedtologin: false
+                    failedtologin: false,
+                    failedtoregister: false
                 })
             }
             case AuthActionType.LOGIN_FAIL: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
-                    failedtologin: true
+                    failedtologin: true,
+                    failedtoregister: false
 
+                })
+            }
+            case AuthActionType.REGISTER_FAIL: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    failedtologin: false,
+                    failedtoregister: true
                 })
             }
             default:
@@ -84,15 +99,24 @@ function AuthContextProvider(props) {
     }
 
     auth.registerUser = async function(firstName, lastName, email, password, passwordVerify) {
-        const response = await api.registerUser(firstName, lastName, email, password, passwordVerify);      
-        if (response.status === 200) {
+        try{
+            const response = await api.registerUser(firstName, lastName, email, password, passwordVerify);
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.REGISTER_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+            }
+
+        }
+        catch(error){
             authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
-                    user: response.data.user
-                }
+                type: AuthActionType.REGISTER_FAIL,
+                payload: null
             })
-            history.push("/");
         }
     }
 
@@ -146,6 +170,14 @@ function AuthContextProvider(props) {
             payload: null
         })
         history.push("/login")
+    }
+    auth.hideFailRegisterModal = function(){
+        //This is where we handle the modal
+        authReducer({
+            type: AuthActionType.LOGOUT_USER,
+            payload: null
+        })
+        history.push("/register")
     }
 
     return (

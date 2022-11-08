@@ -12,6 +12,8 @@ import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import MUIFailToRegisterModal from './MUIFailToRegisterModal.js';
+//import MUIFailToLoginModal from './MUIFailToLoginModal';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
@@ -116,7 +118,10 @@ export default function RegisterScreen() {
                                 </Link>
                             </Grid>
                         </Grid>
-                    </Box>
+                        <MUIFailToRegisterModal>
+
+                        </MUIFailToRegisterModal>
+                    </Box>      
                 </Box>
                 <Copyright sx={{ mt: 5 }} />
             </Container>

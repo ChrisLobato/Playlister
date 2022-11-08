@@ -18,21 +18,21 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-export default function MUIFailToLoginModal(){
+export default function MUIFailToRegisterModal(){
     const { auth } = useContext(AuthContext);
-    const handleFailLoginModal = () => {
-        auth.hideFailLoginModal();
+    const handleFailRegisterModal = () => {
+        auth.hideFailRegisterModal();
     }
     return(
-        <Modal open = {auth.failedtologin}>
+        <Modal open = {auth.failedtoregister}>
             <Box sx = {style}>
                 <Alert severity = "error">
                     <AlertTitle>
-                        Login Error
+                        Registration Error
                     </AlertTitle>
-                    Failed to Login  - <strong>incorrect password or email</strong>
+                    Failed to Register  - <strong>invalid email or password</strong>
                 </Alert>
-                <Button onClick = {handleFailLoginModal}>
+                <Button onClick = {handleFailRegisterModal}>
                     Close
                 </Button>
             </Box>
